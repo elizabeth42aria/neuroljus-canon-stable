@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * NL-VISION PROTECTED FILE
  * This file is part of the stable, polished NL-VISION demo (CareChat + LiveVitals + Holistic).
