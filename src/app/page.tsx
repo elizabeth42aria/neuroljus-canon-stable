@@ -5,9 +5,18 @@ export default function Home() {
       <p className="text-slate-600 mt-2">
         Portal con chat multilingüe y señales.
       </p>
-      <ul className="list-disc ml-5 mt-4">
-        <li><a className="underline" href="/(demo)/chat">Abrir Chat</a></li>
-        <li><a className="underline" href="/(demo)/conduit">Abrir Conducto</a></li>
+
+      <ul className="list-disc ml-5 mt-4 space-y-2">
+        <li>
+          <a className="underline" href="/demo/chat">
+            Abrir Chat
+          </a>
+        </li>
+        <li>
+          <a className="underline" href="/demo/conduit">
+            Abrir Conducto
+          </a>
+        </li>
       </ul>
     </main>
   );
