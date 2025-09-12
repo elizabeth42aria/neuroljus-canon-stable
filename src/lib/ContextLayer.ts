@@ -2,6 +2,7 @@
 // Ajustado para arrancar rápido el baseline y emitir con suavizado
 
 export class ContextLayer {
+  public cfg: any;
   constructor(opts = {}) {
     this.cfg = {
       // ⬇️ Arranque rápido del baseline personal (antes: 15min / 60 muestras)
