@@ -13,3 +13,14 @@
 2. Si persiste el 404, verificar estructura y nombres exactos de las carpetas dentro de `(demo)`.
 3. Probar localmente con \`npm run dev\` antes de nuevo push.
 4. (Opcional) Redirección de \`/chat\` → \`/demo/chat\` para simplificar URLs públicas.
+
+
+---
+
+### 🟢 Checkpoint
+
+- **Fecha:** 2025-09-13
+- **Módulo:** care-log (registro de episodios)
+- **Estado:** ☑ Promovido al núcleo
+- **Motivo de promoción:** probado en /demo/care con registro y métricas simuladas
+- **Próxima acción:** conectar a DB real (Prisma + Turso)
