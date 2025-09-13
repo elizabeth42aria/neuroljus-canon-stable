@@ -8,13 +8,13 @@ export default function Home() {
 
       <ul className="list-disc ml-5 mt-4 space-y-2">
         <li>
-          <a className="underline" href="/demo/chat">
+          <a className="underline" href="/chat">
             Abrir Chat
           </a>
         </li>
         <li>
-          <a className="underline" href="/demo/conduit">
-            Abrir Conducto
+          <a className="underline" href="/conduit">
+            Abrir Conduicto
           </a>
         </li>
       </ul>
