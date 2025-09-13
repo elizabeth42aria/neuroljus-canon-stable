@@ -24,3 +24,26 @@
 - **Estado:** ☑ Promovido al núcleo
 - **Motivo de promoción:** probado en /demo/care con registro y métricas simuladas
 - **Próxima acción:** conectar a DB real (Prisma + Turso)
+
+# Progress – 13 Sept 2025
+
+## Avances principales
+- Se corrigió la ruta de navegación: `/demo/chat` → `/chat` y `/demo/conduit` → `/conduit`.
+- Middleware neutralizado para permitir acceso libre a las nuevas rutas.
+- `page.tsx` ajustado correctamente para que los links apunten a `/chat` y `/conduit`.
+- Despliegue verificado en Vercel:  
+  - `/chat` ya carga el MVP multilingüe con señales, modos y memoria.  
+  - `/conduit` responde con el placeholder de construcción.
+- Integración con `useSignals.ts` confirmada y estable.
+- Se agregó la API Key en `.env.local` y en Vercel (environment variables).
+- El sistema reconoce `OPENAI_API_KEY`, pero muestra error de **insufficient_quota** → identificado como falta de facturación en OpenAI.
+- Próximo paso: activar plan de pago en OpenAI y fijar límite mensual para habilitar el modo IA híbrido.
+
+## Estado actual
+✅ Local rules funcionando.  
+✅ Señales compartidas integradas.  
+✅ Rutas `/chat` y `/conduit` online.  
+⚠️ Falta habilitar facturación en OpenAI para completar la experiencia híbrida.  
+
+## Reflexión
+Hoy dimos un paso enorme: ya existe un portal desplegado en producción que muestra el chat multilingüe y el módulo Conduit. La estructura está viva y lista para ser alimentada.

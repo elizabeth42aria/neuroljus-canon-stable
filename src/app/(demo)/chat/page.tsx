@@ -1,7 +1,7 @@
 // src/app/(demo)/chat/page.tsx
 // Multilingüe (sv/es/en) + Modo local/reglas + Modo IA híbrida + señales compartidas
 
-"use client";
+'use client';
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSignals } from "@/lib/useSignals";
