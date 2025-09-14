@@ -1,3 +1,4 @@
+// src/app/page.tsx
 export default function Home() {
   return (
     <main className="mx-auto max-w-2xl p-6">
@@ -14,7 +15,17 @@ export default function Home() {
         </li>
         <li>
           <a className="underline" href="/conduit">
-            Abrir Conduicto
+            Abrir Conduit
+          </a>
+        </li>
+        <li>
+          <a className="underline" href="/care">
+            Abrir Care Dashboard
+          </a>
+        </li>
+        <li>
+          <a className="underline" href="/neuroljus-voice">
+            Decidir “casa” de Neuroljus
           </a>
         </li>
       </ul>
