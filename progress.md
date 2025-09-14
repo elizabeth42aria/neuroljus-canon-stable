@@ -74,26 +74,7 @@ Hoy dimos un paso enorme: ya existe un portal desplegado en producción que mues
 
 ---
 
-# Progress – 14 Sept 2025
-
-## Avances principales
-- 
-
-## Estado actual
-✅ Local rules funcionando.  
-✅ Señales compartidas integradas.  
-✅ Rutas `/chat` y `/conduit` online.  
-⚠️ Aún pendiente habilitar facturación en OpenAI para completar la experiencia híbrida.  
-
-## Reflexión
-- 
-## Avances principales
-- OpenAI billing activado y límite mensual configurado.
-- Neuroljus ya responde en producción con IA híbrida (chat).
-- Se validó que el flujo `/chat` genera respuestas útiles y consistentes.
-
-
-# Progress · 14 sept 2025
+ Progress · 14 sept 2025
 
 ## Avances
 - Implementado componente `ClientTime` → resuelve error de hidratación en Next.js (tiempo renderizado en cliente).
