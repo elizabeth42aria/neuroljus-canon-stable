@@ -1,189 +1,78 @@
 // src/app/(demo)/chat/page.tsx
-// Chat multilingüe: UI en un idioma a la vez, IA entiende todos.
+"use client";
 
-'use client';
-
-import { useEffect, useRef, useState } from "react";
-
-type Msg = {
-  id: string;
-  role: "user" | "assistant";
-  text: string;
-  t: number;
-};
-
-type Lang = "sv" | "es" | "en";
-
-const texts = {
-  sv: {
-    title: "Neuroljus · Chat MVP",
-    greeting: "Hej. Jag är Neuroljus. Jag kan lyssna och svara med klarhet. Vad behöver du idag?",
-    input: "Skriv här…",
-    send: "Skicka",
-    thinking: "Neuroljus tänker…",
-  },
-  es: {
-    title: "Neuroljus · Chat MVP",
-    greeting: "Hola. Soy Neuroljus. Puedo escucharte y responder con claridad. ¿Qué necesitas hoy?",
-    input: "Escribe aquí…",
-    send: "Enviar",
-    thinking: "Neuroljus está pensando…",
-  },
-  en: {
-    title: "Neuroljus · Chat MVP",
-    greeting: "Hello. I am Neuroljus. I can listen and respond with clarity. What do you need today?",
-    input: "Type here…",
-    send: "Send",
-    thinking: "Neuroljus is thinking…",
-  },
-};
-function ClientTime({ t }: { t: number }) {
-  const [ready, setReady] = useState(false);
-  useEffect(() => setReady(true), []);
-  if (!ready) return null; // no renderiza nada en SSR
-  const d = new Date(t);
-  return (
-    <time dateTime={d.toISOString()} suppressHydrationWarning>
-      {d.toLocaleTimeString()}
-    </time>
-  );
-}
+import { useState } from "react";
 
 export default function ChatPage() {
-  const [lang, setLang] = useState<Lang>("sv");
-  const t = texts[lang];
-
-  const [messages, setMessages] = useState<Msg[]>([
-    {
-      id: crypto.randomUUID(),
-      role: "assistant",
-      text: t.greeting,
-      t: Date.now(),
-    },
-  ]);
-
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
   const [input, setInput] = useState("");
-  const [isThinking, setIsThinking] = useState(false);
-  const listRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    listRef.current?.scrollTo({
-      top: listRef.current.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [messages.length, isThinking]);
+  async function send(text: string) {
+    if (!text.trim()) return;
 
-  // Actualiza saludo al cambiar idioma
-  useEffect(() => {
-    if (messages.length === 1 && messages[0].role === "assistant") {
-      setMessages([{ ...messages[0], text: t.greeting }]);
-    }
-  }, [lang]);
-
-  function push(role: Msg["role"], text: string) {
-    setMessages((m) => [
-      ...m,
-      { id: crypto.randomUUID(), role, text, t: Date.now() },
-    ]);
-  }
-
-  async function onSend(e?: React.FormEvent) {
-    e?.preventDefault();
-    if (!input.trim()) return;
-    const userText = input.trim();
+    // 1. Mostrar el mensaje del usuario en la UI
+    setMessages((m) => [...m, { role: "user", content: text }]);
     setInput("");
-    push("user", userText);
-    setIsThinking(true);
 
     try {
-      const r = await fetch("/api/ai", {
+      // 2. Llamar a la API de OpenAI
+      const res = await fetch("/api/ai", {
         method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          messages: messages
-            .concat([{ role: "user", text: userText, t: Date.now(), id: "tmp" }])
-            .map((m) => ({ role: m.role, content: m.text })),
-          lang,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: [...messages, { role: "user", content: text }] }),
       });
-      const data = await r.json();
-      if (!r.ok) throw new Error(data?.error || "AI error");
-      push("assistant", data.content || "");
-    } catch (err: any) {
-      push("assistant", `⚠️ ${err?.message || "Error"}`);
-    } finally {
-      setIsThinking(false);
+
+      if (!res.ok) {
+        throw new Error(`Error HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      // 3. Mostrar respuesta de la IA
+      setMessages((m) => [...m, { role: "assistant", content: data.reply }]);
+    } catch (err) {
+      console.error("Error al enviar mensaje:", err);
+      setMessages((m) => [...m, { role: "assistant", content: "⚠️ Error al conectar con la IA." }]);
     }
   }
 
   return (
-    <div className="mx-auto max-w-3xl w-full space-y-4">
-      <header className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold">{t.title}</h1>
+    <main className="max-w-2xl mx-auto p-4 space-y-4">
+      <h1 className="text-xl font-semibold">Neuroljus · Chat</h1>
 
-        {/* Idioma */}
-        <div className="flex gap-1 border rounded-xl p-1 w-fit">
-          <button
-            onClick={() => setLang("sv")}
-            className={`px-2 py-1 rounded ${lang === "sv" ? "bg-slate-900 text-white" : "bg-white"}`}
-          >
-            Svenska
-          </button>
-          <button
-            onClick={() => setLang("es")}
-            className={`px-2 py-1 rounded ${lang === "es" ? "bg-slate-900 text-white" : "bg-white"}`}
-          >
-            Español
-          </button>
-          <button
-            onClick={() => setLang("en")}
-            className={`px-2 py-1 rounded ${lang === "en" ? "bg-slate-900 text-white" : "bg-white"}`}
-          >
-            English
-          </button>
-        </div>
-      </header>
-
-      {/* Mensajes */}
-      <div
-        ref={listRef}
-        className="border rounded-2xl p-3 h-[52vh] overflow-y-auto bg-white"
-      >
-        {messages.map((m) => (
+      <div className="border rounded-lg p-3 h-[60vh] overflow-auto space-y-2 bg-slate-50">
+        {messages.map((m, i) => (
           <div
-            key={m.id}
-            className={`mb-3 flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+            key={i}
+            className={m.role === "user" ? "text-right" : "text-left text-blue-700"}
           >
-            <div
-              className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm shadow-sm border ${
-                m.role === "user" ? "bg-slate-900 text-white" : "bg-slate-50"
-              }`}
-            >
-              <p className="whitespace-pre-wrap leading-relaxed">{m.text}</p>
-              <div className="mt-1 text-[10px] opacity-60">
-                <ClientTime t={m.t} />
-              </div>
-            </div>
+            <span className="px-2 py-1 inline-block rounded bg-white shadow">
+              {m.content}
+            </span>
           </div>
         ))}
-        {isThinking && <div className="text-xs text-slate-500">{t.thinking}</div>}
       </div>
 
-      {/* Input */}
-      <form onSubmit={onSend} className="flex gap-2">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          send(input);
+        }}
+        className="flex gap-2"
+      >
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder={t.input}
-          className="flex-1 rounded-xl border px-3 py-2 text-sm"
+          placeholder="Escribe tu mensaje..."
+          className="flex-1 border rounded px-2 py-1"
         />
         <button
           type="submit"
-          className="rounded-xl px-4 py-2 text-sm bg-slate-900 text-white"
+          className="px-3 py-1 rounded bg-blue-600 text-white"
         >
-          {t.send}
+          Enviar
         </button>
       </form>
-    </div>
+    </main>
   );
 }
